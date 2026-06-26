@@ -43,7 +43,16 @@ export async function POST(request: Request) {
         audio: {
           input: {
             transcription: { model: "gpt-4o-mini-transcribe" },
-            turn_detection: { type: "server_vad" },
+            // far_field is OpenAI's speakerphone-optimised mode; combined with a higher
+            // VAD threshold it stops the model treating its own speaker bleed-through as
+            // the user barging in (which made it cut itself off on loudspeaker).
+            noise_reduction: { type: "far_field" },
+            turn_detection: {
+              type: "server_vad",
+              threshold: 0.7,
+              prefix_padding_ms: 300,
+              silence_duration_ms: 600,
+            },
           },
           output: { voice: VOICE },
         },

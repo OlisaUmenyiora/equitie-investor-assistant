@@ -129,6 +129,62 @@ body {
   animation-delay: 0.4s;
 }
 
+/* Voice orb (ChatGPT-style), on-brand mint, audio-reactive via --level (0..1) */
+.orb-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.orb-wrap::before {
+  content: "";
+  position: absolute;
+  width: clamp(180px, 52vw, 320px);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(54, 244, 179, 0.22),
+    transparent 70%
+  );
+  filter: blur(18px);
+  z-index: 0;
+}
+.orb {
+  --level: 0;
+  position: relative;
+  z-index: 1;
+  width: clamp(150px, 42vw, 250px);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 36% 30%,
+    #e6fff6 0%,
+    #5cf6c1 30%,
+    #36f4b3 52%,
+    #1aa888 78%,
+    #0f7361 100%
+  );
+  box-shadow:
+    0 0 calc(36px + var(--level) * 90px)
+      rgba(54, 244, 179, calc(0.3 + var(--level) * 0.5)),
+    inset -10px -14px 40px rgba(8, 60, 50, 0.45),
+    inset 12px 14px 36px rgba(255, 255, 255, 0.35);
+  transform: scale(calc(1 + var(--level) * 0.2));
+  transition:
+    transform 0.08s linear,
+    box-shadow 0.12s linear;
+  animation: orb-breathe 4.8s ease-in-out infinite;
+}
+@keyframes orb-breathe {
+  0%,
+  100% {
+    filter: brightness(0.97) saturate(1);
+  }
+  50% {
+    filter: brightness(1.07) saturate(1.08);
+  }
+}
+
 /* Assistant prose rendered from light markdown */
 .prose-answer {
   line-height: 1.72;

@@ -31,6 +31,9 @@ export function useRealtime(investorId: string) {
   const [muted, setMuted] = useState(false);
   const [transcript, setTranscript] = useState<TranscriptTurn[]>([]);
 
+  const [micStream, setMicStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const dcRef = useRef<RTCDataChannel | null>(null);
   const micRef = useRef<MediaStream | null>(null);
@@ -192,6 +195,8 @@ export function useRealtime(investorId: string) {
     pcRef.current?.close();
     pcRef.current = null;
     if (audioRef.current) audioRef.current.srcObject = null;
+    setMicStream(null);
+    setRemoteStream(null);
     setStatus("idle");
     setListening(false);
     setSpeaking(false);
@@ -222,10 +227,20 @@ export function useRealtime(investorId: string) {
       pc.ontrack = (e) => {
         audio.srcObject = e.streams[0];
         audio.play().catch(() => {});
+        setRemoteStream(e.streams[0]);
       };
 
-      const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Echo cancellation is essential on a loudspeaker: without it the mic hears the
+      // assistant and the model interrupts itself.
+      const mic = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
       micRef.current = mic;
+      setMicStream(mic);
       mic.getTracks().forEach((t) => pc.addTrack(t, mic));
 
       const dc = pc.createDataChannel("oai-events");
@@ -289,6 +304,8 @@ export function useRealtime(investorId: string) {
     speaking,
     muted,
     transcript,
+    micStream,
+    remoteStream,
     connect,
     disconnect,
     toggleMute,
