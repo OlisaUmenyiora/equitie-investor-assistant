@@ -1,7 +1,7 @@
 // The deterministic tool layer the assistant calls. Every function is scoped to a
 // single investorId (passed by the server, never by the model) so one investor can
 // never see another's data. Each result carries a `sources` array of dataset row ids
-// for citation. No function lets the LLM do arithmetic — numbers come from here.
+// for citation. No function lets the LLM do arithmetic, numbers come from here.
 import type { Company, Currency } from "./data/types";
 import { store, getInvestor } from "./data/store";
 import { convert, round2 } from "./fx";

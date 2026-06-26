@@ -244,7 +244,7 @@ function EmptyState({
         Hello{loading ? "" : `, ${firstName}`}.
       </h1>
       <p className="mt-3 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
-        Ask anything about your portfolio — a single position across rounds, your
+        Ask anything about your portfolio: a single position across rounds, your
         fees and any discounts, upcoming capital calls, realised exits after carry,
         or a plain-language account statement. Every number is grounded in your data
         and cited.

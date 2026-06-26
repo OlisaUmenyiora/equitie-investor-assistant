@@ -20,7 +20,7 @@ describe("FX conversion", () => {
   });
 });
 
-describe("INV001 Forgecraft Seed (ALC0001) — per-investor 10% price discount", () => {
+describe("INV001 Forgecraft Seed (ALC0001), per-investor 10% price discount", () => {
   const v = buildAllocationView(alloc("ALC0001"), "GBP");
   it("uses the discounted effective share price, not the deal entry price", () => {
     expect(v.effectiveSharePrice).toBe(2.25); // 2.5 entry × (1 − 0.10)

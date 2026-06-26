@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
-  EquiTie Investor Assistant — refined, warm-minimalist theme.
+  EquiTie Investor Assistant, refined, warm-minimalist theme.
   Ivory paper ground, warm ink, a single clay/rust accent. Generous whitespace.
 */
 :root {
@@ -35,9 +35,9 @@
   --color-clay-wash: var(--clay-wash);
   --color-gain: var(--gain);
   --color-loss: var(--loss);
-  --font-display: var(--font-display), Georgia, serif;
-  --font-sans: var(--font-sans), system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-display: var(--font-poppins), system-ui, sans-serif;
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+  --font-mono: var(--font-poppins), ui-monospace, monospace;
 }
 
 html {

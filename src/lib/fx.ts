@@ -13,7 +13,7 @@ export function convert(amount: number, from: Currency, to: Currency): number {
   return toUsd(amount, from) / fxToUsd(to);
 }
 
-/** Round to 2dp for display only — never used inside running calculations. */
+/** Round to 2dp for display only, never used inside running calculations. */
 export function round2(n: number): number {
   return Math.round((n + Number.EPSILON) * 100) / 100;
 }

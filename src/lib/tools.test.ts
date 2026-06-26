@@ -28,7 +28,7 @@ describe("getPortfolioOverview", () => {
   });
 });
 
-describe("getPosition — multi-round + citations", () => {
+describe("getPosition, multi-round + citations", () => {
   it("returns three Forgecraft rounds for INV001 with per-round share prices", () => {
     const p = getPosition("INV001", "Forgecraft");
     expect(p.found && p.held).toBe(true);
@@ -60,7 +60,7 @@ describe("Disambiguation: Northpeak Analytics vs Northpeak Health", () => {
   });
 });
 
-describe("DATA ISOLATION — the privacy invariant", () => {
+describe("DATA ISOLATION, the privacy invariant", () => {
   it("every tool returns only the requested investor's rows", () => {
     const investorId = "INV001";
     const allocIds = new Set(
@@ -84,7 +84,7 @@ describe("DATA ISOLATION — the privacy invariant", () => {
   });
 });
 
-describe("getFees — effective vs deal standard", () => {
+describe("getFees, effective vs deal standard", () => {
   it("INV001 Inferna Series B shows a discounted management fee (1% vs 2% standard)", () => {
     const f = getFees("INV001", "Inferna AI");
     expect(f.found).toBe(true);
@@ -97,7 +97,7 @@ describe("getFees — effective vs deal standard", () => {
   });
 });
 
-describe("getObligations — upcoming capital call on a partial-call deal", () => {
+describe("getObligations, upcoming capital call on a partial-call deal", () => {
   it("surfaces an upcoming obligation with a citation", () => {
     // Find an investor with an Upcoming capital call.
     const call = store.raw.capital_calls.find((c) => c.status === "Upcoming")!;
@@ -108,7 +108,7 @@ describe("getObligations — upcoming capital call on a partial-call deal", () =
   });
 });
 
-describe("getRealisedOutcomes — net is below gross by the carry", () => {
+describe("getRealisedOutcomes, net is below gross by the carry", () => {
   it("an investor with an exit shows net < gross", () => {
     const dist = store.raw.distributions.find((d) => d.distribution_type === "Exit Proceeds")!;
     const r = getRealisedOutcomes(dist.investor_id);
@@ -118,7 +118,7 @@ describe("getRealisedOutcomes — net is below gross by the carry", () => {
   });
 });
 
-describe("getValuationHistory — down round visible", () => {
+describe("getValuationHistory, down round visible", () => {
   it("shows Qubrium marks moving both directions for a holder", () => {
     const alloc = store.raw.allocations.find((a) => a.deal_id === "DEAL010")!;
     const h = getValuationHistory(alloc.investor_id, "Qubrium");
@@ -131,7 +131,7 @@ describe("getValuationHistory — down round visible", () => {
   });
 });
 
-describe("getInvestorProfile — derived personalisation signals", () => {
+describe("getInvestorProfile, derived personalisation signals", () => {
   it("computes deal count and top sectors for INV001", () => {
     const p = getInvestorProfile("INV001");
     expect(p.dealCount).toBe(4);

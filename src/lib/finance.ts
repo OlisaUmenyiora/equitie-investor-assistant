@@ -1,4 +1,4 @@
-// Per-allocation financial computations — the single source of truth for every
+// Per-allocation financial computations, the single source of truth for every
 // number the assistant reports. Pure functions over the store; deterministic.
 //
 // Formulas (from the dataset guide):

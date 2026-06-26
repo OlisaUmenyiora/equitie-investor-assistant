@@ -75,7 +75,7 @@ export function Sidebar({
           </svg>
         </div>
         <p className="mt-2 text-[0.74rem] leading-relaxed text-ink-faint">
-          Auth is skipped per the brief — switching here is the same as logging in
+          Auth is skipped per the brief. Switching here is the same as logging in
           as that investor. The assistant only ever sees this person&apos;s data.
         </p>
       </div>
@@ -135,7 +135,7 @@ export function Sidebar({
               </>
             ) : (
               <p className="mt-4 text-[0.85rem] leading-relaxed text-ink-soft">
-                Newly onboarded — no allocations yet. A good case for the
+                Newly onboarded, no allocations yet. A good case for the
                 &ldquo;you have no investments&rdquo; flow.
               </p>
             )}

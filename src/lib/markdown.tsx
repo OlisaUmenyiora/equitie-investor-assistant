@@ -4,7 +4,7 @@ import { Fragment, type ReactNode } from "react";
 // injection surface). Supports: **bold**, `code`, bullet/numbered lists, paragraphs.
 // That is all the assistant emits.
 
-/** Strip a trailing "Sources: …" line — citations are rendered as chips separately. */
+/** Strip a trailing "Sources: …" line, citations are rendered as chips separately. */
 export function stripSourcesLine(text: string): string {
   return text.replace(/\n?\s*Sources?:\s*[A-Z0-9 ,_-]+\.?\s*$/i, "").trimEnd();
 }

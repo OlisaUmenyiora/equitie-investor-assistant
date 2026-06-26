@@ -1,7 +1,7 @@
 # EquiTie Investor Assistant
 
 A personalised, **grounded** AI assistant an EquiTie investor can ask, in plain
-language, about their own portfolio — holdings, MOIC, fees, obligations, exits and
+language, about their own portfolio, holdings, MOIC, fees, obligations, exits and
 account statement. Every number is computed deterministically from the provided
 dataset and **cited by source row**; the language model only decides which tool to
 call and how to phrase the answer for that specific investor.
@@ -39,14 +39,14 @@ The single most important design decision:
 
 > **Code does the maths. The model does the words.**
 
-The dataset is full of traps — the same company across multiple rounds, per-investor
+The dataset is full of traps, the same company across multiple rounds, per-investor
 share-price and fee discounts, four currencies, commitment-vs-contributed, exits,
 write-offs, down rounds, partial secondaries, and similar company names. If the model
 did arithmetic, it would get these wrong and present them with false confidence.
 
 Instead, a **deterministic TypeScript layer** computes every figure and returns it
 together with the dataset row ids it used. The model receives those structured
-results as tool outputs and cannot invent a number — it can only relay and frame what
+results as tool outputs and cannot invent a number, it can only relay and frame what
 the tools computed. This is what wins the case study's heaviest weight (reliability &
 verification) and makes answers auditable.
 
@@ -63,18 +63,18 @@ CSV files ──build step──▶ typed JSON bundle (in-memory store)
 
 ### Layers
 
-- **`src/lib/data/`** — typed model, the CSV→JSON build step, and an in-memory store
+- **`src/lib/data/`**, typed model, the CSV→JSON build step, and an in-memory store
   with the indexes the tools need (by investor, by deal, latest valuation per deal…).
-- **`src/lib/fx.ts`** — currency conversion via USD. Every summed figure passes
+- **`src/lib/fx.ts`**, currency conversion via USD. Every summed figure passes
   through it because deals are denominated in USD/GBP/EUR/AED while investors report
   in their own currency.
-- **`src/lib/finance.ts`** — per-allocation computations (current value, MOIC, DPI,
+- **`src/lib/finance.ts`**, per-allocation computations (current value, MOIC, DPI,
   RVPI, realised fraction), the single source of truth for every number.
-- **`src/lib/tools.ts`** — the eight tools the model can call (overview, position,
+- **`src/lib/tools.ts`**, the eight tools the model can call (overview, position,
   obligations, realised, fees, valuations, statement, profile). Each is **hard-scoped
   to one `investorId`** and returns `sources`.
-- **`src/lib/openai/`** — the OpenAI tool definitions and the chat orchestration loop.
-- **`src/app/`** — the Next.js App Router UI and the API route handlers.
+- **`src/lib/openai/`**, the OpenAI tool definitions and the chat orchestration loop.
+- **`src/app/`**, the Next.js App Router UI and the API route handlers.
 
 ---
 
@@ -91,13 +91,13 @@ cited row belongs to the requested investor.
 
 ## Models / APIs used and why
 
-- **OpenAI Chat Completions with function calling** — the orchestration layer. The
+- **OpenAI Chat Completions with function calling**, the orchestration layer. The
   model parses intent, calls the deterministic tools, and writes the final answer.
   Configurable via `OPENAI_CHAT_MODEL` (default **`gpt-5.1`**). Chosen because GPT-5.x
   has excellent, reliable tool-calling and instruction-following; `reasoning_effort` is
   set to `low` (`OPENAI_REASONING_EFFORT`) to keep latency ~3s on follow-ups while tool
   selection here is simple.
-- **`gpt-realtime`** — reserved for the optional voice surface (a roadmap item). It can
+- **`gpt-realtime`**, reserved for the optional voice surface (a roadmap item). It can
   register the **same tool definitions**, so spoken answers would use identical
   deterministic numbers.
 - **No model does arithmetic, retrieval-ranking, or FX.** Those are plain code.
@@ -152,7 +152,7 @@ Correctness is proven **before** the model is involved:
   numbers match the tested layer.
 
 Spot-checked example (INV001, reports in GBP): blended MOIC **2.60×**, total current
-value **£438,494.76**, contributed **£168,592.59** — each traceable to the cited
+value **£438,494.76**, contributed **£168,592.59**, each traceable to the cited
 allocation and valuation rows.
 
 ---
@@ -163,11 +163,11 @@ allocation and valuation rows.
   Streaming is a small follow-up.
 - **History is client-held** and re-sent each turn; there's no persistence or rate
   limiting (fine for a prototype, not for production).
-- **Light markdown only.** The renderer supports bold, inline code and lists — enough
+- **Light markdown only.** The renderer supports bold, inline code and lists, enough
   for the assistant's output; it is not a full markdown engine.
 - **Latency.** The portfolio-overview answer can take ~8s because it reasons over a
   larger tool result; follow-ups are ~3s.
-- **Voice is not built** — it is scoped as the next step (same tools, `gpt-realtime`).
+- **Voice is not built**, it is scoped as the next step (same tools, `gpt-realtime`).
 - **Personalisation is rule-based** from `tech_savviness`/`age` plus derived signals;
   it changes tone only. The underlying figures are identical for every investor.
 - **No auth / landing page / infra**, per the brief. The investor-switcher stands in

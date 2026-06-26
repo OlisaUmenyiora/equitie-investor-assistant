@@ -1,8 +1,8 @@
-# Build Roadmap — EquiTie Relationship-Manager Bot
+# Build Roadmap, EquiTie Relationship-Manager Bot
 
 **Goal:** in six months, ship an AI relationship manager inside the EquiTie iOS
-investor app that does much of what a human RM does today — not just answer questions,
-but proactively manage the investor relationship — while keeping a human firmly in the
+investor app that does much of what a human RM does today, not just answer questions,
+but proactively manage the investor relationship, while keeping a human firmly in the
 loop for advice and anything irreversible.
 
 The prototype in this repo is Phase 0: the **grounded Q&A core** (deterministic
@@ -14,20 +14,20 @@ numbers, citations, personalisation). The roadmap turns that core into a product
 
 **What the bot does (beyond Q&A):**
 
-- **Grounded portfolio Q&A** (the prototype) — positions, MOIC, fees, obligations,
+- **Grounded portfolio Q&A** (the prototype), positions, MOIC, fees, obligations,
   statements, in the investor's language and currency, always cited.
-- **Proactive nudges & reminders** — upcoming capital calls, overdue/upcoming fees,
+- **Proactive nudges & reminders**, upcoming capital calls, overdue/upcoming fees,
   new valuation marks, distributions hitting their account, document expiries. Push +
   in-app, scheduled from the ledger, never spammy.
-- **Capital-call & payment assistance** — explain a call, show wiring details, confirm
+- **Capital-call & payment assistance**, explain a call, show wiring details, confirm
   receipt; hand off the actual money movement to fund admin (the bot never moves cash).
-- **Document & KYC workflows** — request and collect KYC/AML refreshes and tax forms,
+- **Document & KYC workflows**, request and collect KYC/AML refreshes and tax forms,
   chase missing documents, route e-signatures, track status.
-- **Onboarding** — guide a new investor from invite → KYC → first allocation, with the
+- **Onboarding**, guide a new investor from invite → KYC → first allocation, with the
   "you have no investments yet" state graduating into a funded portfolio.
-- **Reporting** — generate the quarterly statement and a plain-language commentary,
+- **Reporting**, generate the quarterly statement and a plain-language commentary,
   on demand or on schedule.
-- **Drafting investor comms** — draft replies and updates for the **human RM to review
+- **Drafting investor comms**, draft replies and updates for the **human RM to review
   and send**; the bot proposes, the human approves.
 
 **What stays with a human (by policy):**
@@ -35,7 +35,7 @@ numbers, citations, personalisation). The roadmap turns that core into a product
 - Investment advice or any view on buy/sell/hold.
 - Moving money, changing bank details, or changing access/permissions.
 - Negotiating fees, side letters, or allocations.
-- Anything legally binding or that materially changes the relationship — the bot
+- Anything legally binding or that materially changes the relationship, the bot
   prepares, a human signs off.
 
 ---
@@ -64,7 +64,7 @@ iOS app (SwiftUI) ──┐
 - **Data layer:** Postgres for app state; the **portfolio ledger remains the system of
   record** (the bot reads it, never writes financial facts). Redis for sessions/cache.
 - **Retrieval:** a vector store (pgvector or a managed option) for *unstructured*
-  context only — documents, past comms, FAQ — never for numbers.
+  context only, documents, past comms, FAQ, never for numbers.
 - **Models & hosting:** a frontier hosted LLM (e.g. GPT-5.x / Claude) for reasoning and
   drafting; a realtime speech model for voice; start fully managed via API, revisit
   private hosting only if compliance demands it.
@@ -102,7 +102,7 @@ emit events the RM console consumes. Everything lands in the audit log.
   (documents, comms, policy), never for figures.
 - **Tool use:** the model orchestrates; tools execute server-side, scoped to the
   authenticated investor. New side-effecting tools (request KYC, draft comms, schedule
-  reminder) are **proposal-only** — they create an action a human approves.
+  reminder) are **proposal-only**, they create an action a human approves.
 - **Deterministic where it counts:** all money, fees, FX, MOIC, dates and eligibility
   are code, not model output. The model never computes or moves anything.
 - **Evaluation:** a versioned eval suite (numerical-accuracy graders against the
@@ -117,12 +117,12 @@ emit events the RM console consumes. Everything lands in the audit log.
 
 ## 5. Team and hiring
 
-Small, senior, AI-native. Headcount ramps to ~7–8.
+Small, senior, AI-native. Headcount ramps to ~7-8.
 
 | Role | Count | Lands |
 |---|---|---|
 | Tech lead / AI engineer (me) | 1 | Month 0 |
-| Senior backend/integrations engineer | 1 | Month 0–1 |
+| Senior backend/integrations engineer | 1 | Month 0-1 |
 | iOS engineer (SwiftUI) | 1 | Month 1 |
 | Full-stack (RM console + web) | 1 | Month 2 |
 | AI/ML engineer (eval, retrieval, agents) | 1 | Month 2 |
@@ -136,18 +136,18 @@ Product and RM-domain input comes from an existing EquiTie RM acting as embedded
 
 ## 6. Timeline (phased)
 
-- **Phase 1 — Months 1–2: Grounded Q&A in-app (GA-quality).** Productionise the
+- **Phase 1, Months 1-2: Grounded Q&A in-app (GA-quality).** Productionise the
   prototype's tool layer against the real ledger; ship read-only Q&A + statements in
   the iOS app behind auth; eval harness live; audit logging from day one.
   *Ships: investors can ask and get cited answers in the app.*
-- **Phase 2 — Months 2–4: Proactive + voice.** Event-driven nudges (calls, fees,
+- **Phase 2, Months 2-4: Proactive + voice.** Event-driven nudges (calls, fees,
   marks, distributions); reminders; the Realtime voice surface (same tools). RM console
   v1 for oversight.
   *Ships: the bot reaches out, and can be spoken to.*
-- **Phase 3 — Months 4–5: Workflows with human-in-the-loop.** KYC/document requests,
+- **Phase 3, Months 4-5: Workflows with human-in-the-loop.** KYC/document requests,
   e-sign routing, onboarding flow, and **draft-comms-for-RM-approval**.
   *Ships: the bot does RM legwork; humans approve.*
-- **Phase 4 — Months 5–6: Reporting, hardening, scale.** Automated quarterly reports +
+- **Phase 4, Months 5-6: Reporting, hardening, scale.** Automated quarterly reports +
   commentary, load/security testing, full compliance review, phased rollout to all
   investors.
   *Ships: a production RM bot.*
@@ -172,14 +172,14 @@ Product and RM-domain input comes from an existing EquiTie RM acting as embedded
 **Build vs buy**
 
 - **Build:** the deterministic tool layer, agent orchestration, eval harness, and the
-  iOS experience — this is the differentiated core and must be owned.
+  iOS experience, this is the differentiated core and must be owned.
 - **Buy:** KYC/AML, e-signature, comms/push, vector store, observability, and the LLM
-  itself — commodity capabilities with strong vendors; don't reinvent.
+  itself, commodity capabilities with strong vendors; don't reinvent.
 
 **Rough cost shape (6 months)**
 
-- **People** dominate: ~7–8 senior staff ≈ the large majority of spend.
-- **AI/inference**: low-to-moderate at this scale — answers are a few tool round-trips;
+- **People** dominate: ~7-8 senior staff ≈ the large majority of spend.
+- **AI/inference**: low-to-moderate at this scale, answers are a few tool round-trips;
   voice is the main variable cost. Budget conservatively and watch per-answer cost via
   observability.
 - **Third-party SaaS** (KYC, e-sign, comms, infra/vector/observability): a modest fixed
@@ -187,4 +187,4 @@ Product and RM-domain input comes from an existing EquiTie RM acting as embedded
 - **Infra/hosting**: small relative to people.
 
 The investment is overwhelmingly in **engineering and compliance judgment**, not in
-compute — which is exactly where the leverage for the investment team is created.
+compute, which is exactly where the leverage for the investment team is created.

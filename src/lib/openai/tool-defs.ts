@@ -1,7 +1,7 @@
 // OpenAI function (tool) definitions + a server-side dispatcher.
 //
 // CRITICAL: the model supplies only the *arguments* (e.g. a company name). The
-// investorId is injected by the server from the authenticated session — it is NOT a
+// investorId is injected by the server from the authenticated session, it is NOT a
 // tool parameter, so the model can never request another investor's data.
 import type { ChatCompletionTool } from "openai/resources/chat/completions";
 import {
