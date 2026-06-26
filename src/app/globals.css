@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+/*
+  EquiTie Investor Assistant — refined, warm-minimalist theme.
+  Ivory paper ground, warm ink, a single clay/rust accent. Generous whitespace.
+*/
+:root {
+  --paper: #f6f3ec; /* warm ivory canvas */
+  --surface: #fffdf9; /* card / message surface */
+  --surface-sunk: #f0ece2; /* inset panels */
+  --ink: #23201b; /* primary text, warm near-black */
+  --ink-soft: #5c564c; /* secondary text */
+  --ink-faint: #938b7d; /* tertiary / captions */
+  --line: #e4ddd0; /* hairline borders */
+  --line-strong: #d6cdbc;
+  --clay: #bd5c3e; /* signature accent (book-cloth rust) */
+  --clay-deep: #a04a30;
+  --clay-wash: #f3e4dc; /* accent tint background */
+  --gain: #3f6b4f; /* positive figure */
+  --loss: #a8452f; /* negative figure */
+  --focus: #c8775c;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-sunk: var(--surface-sunk);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-clay: var(--clay);
+  --color-clay-deep: var(--clay-deep);
+  --color-clay-wash: var(--clay-wash);
+  --color-gain: var(--gain);
+  --color-loss: var(--loss);
+  --font-display: var(--font-display), Georgia, serif;
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+html {
+  background: var(--paper);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv01";
+}
+
+::selection {
+  background: var(--clay-wash);
+  color: var(--clay-deep);
+}
+
+/* Refined scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 99px;
+  border: 2px solid var(--paper);
+}
+
+/* Entrance + micro-interactions */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade {
+  animation: fade 0.6s ease both;
+}
+
+.dot {
+  animation: blink 1.4s infinite both;
+}
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Assistant prose rendered from light markdown */
+.prose-answer {
+  line-height: 1.72;
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+.prose-answer strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.prose-answer ul,
+.prose-answer ol {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.prose-answer ul li {
+  list-style: none;
+  position: relative;
+}
+.prose-answer ul li::before {
+  content: "";
+  position: absolute;
+  left: -0.9rem;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--clay);
+}
+.prose-answer ol {
+  list-style: decimal;
+}
+.prose-answer p + p {
+  margin-top: 0.75rem;
+}
+.prose-answer code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--surface-sunk);
+  padding: 0.1em 0.35em;
+  border-radius: 5px;
+}
