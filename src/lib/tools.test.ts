@@ -32,7 +32,7 @@ describe("getPosition, multi-round + citations", () => {
   it("returns three Forgecraft rounds for INV001 with per-round share prices", () => {
     const p = getPosition("INV001", "Forgecraft");
     expect(p.found && p.held).toBe(true);
-    if (p.found && p.held) {
+    if (p.found && p.held && p.rounds) {
       expect(p.rounds).toHaveLength(3);
       const seed = p.rounds.find((r) => r.round === "Seed")!;
       expect(seed.effectiveSharePrice).toBe(2.25); // 10% discount applied
@@ -88,7 +88,7 @@ describe("getFees, effective vs deal standard", () => {
   it("INV001 Inferna Series B shows a discounted management fee (1% vs 2% standard)", () => {
     const f = getFees("INV001", "Inferna AI");
     expect(f.found).toBe(true);
-    if (f.found && f.held) {
+    if (f.found && f.held && f.schedules) {
       const seriesB = f.schedules.find((s) => s.round === "Series B")!;
       expect(seriesB.management.effectivePct).toBe(1);
       expect(seriesB.management.standardPct).toBe(2);

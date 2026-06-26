@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { DirectoryInvestor, InvestorProfile } from "./types";
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -30,17 +31,17 @@ export function Sidebar({
   return (
     <aside className="flex w-[340px] shrink-0 flex-col border-r border-line bg-surface/40 px-7 py-8">
       {/* Brand */}
-      <div className="flex items-center gap-3">
-        <div className="grid h-9 w-9 place-items-center rounded-[10px] bg-clay text-surface shadow-sm">
-          <span className="font-display text-lg leading-none">E</span>
-        </div>
-        <div className="leading-tight">
-          <div className="font-display text-[1.35rem] tracking-tight text-ink">
-            EquiTie
-          </div>
-          <div className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-ink-faint">
-            Investor Assistant
-          </div>
+      <div className="flex flex-col gap-1.5">
+        <Image
+          src="/equitie-logo.png"
+          alt="EquiTie"
+          width={150}
+          height={46}
+          priority
+          className="h-9 w-auto"
+        />
+        <div className="pl-0.5 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-ink-faint">
+          Investor Assistant
         </div>
       </div>
 

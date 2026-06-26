@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatMessage } from "@/components/ChatMessage";
+import { VoicePanel } from "@/components/VoicePanel";
 import type {
   ChatMessage as Msg,
   DirectoryInvestor,
@@ -39,6 +40,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
@@ -71,17 +73,12 @@ export default function Home() {
     });
   }, [messages]);
 
-  const send = useCallback(
-    async (text: string) => {
-      const trimmed = text.trim();
-      if (!trimmed || busy) return;
-      setInput("");
-      if (taRef.current) taRef.current.style.height = "auto";
-
-      const history: Msg[] = [...messages, { role: "user", content: trimmed }];
+  // Run the assistant over a given history (ending in a user turn). Shared by send
+  // and regenerate.
+  const complete = useCallback(
+    async (history: Msg[]) => {
       setMessages([...history, { role: "assistant", content: "", pending: true }]);
       setBusy(true);
-
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
@@ -118,8 +115,28 @@ export default function Home() {
         setBusy(false);
       }
     },
-    [busy, messages, selectedId],
+    [selectedId],
   );
+
+  const send = useCallback(
+    (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed || busy) return;
+      setInput("");
+      if (taRef.current) taRef.current.style.height = "auto";
+      complete([...messages, { role: "user", content: trimmed }]);
+    },
+    [busy, messages, complete],
+  );
+
+  // Regenerate: drop trailing assistant turns and re-run the last user question.
+  const regenerate = useCallback(() => {
+    if (busy) return;
+    let end = messages.length;
+    while (end > 0 && messages[end - 1].role === "assistant") end--;
+    if (end === 0) return;
+    complete(messages.slice(0, end));
+  }, [busy, messages, complete]);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -148,9 +165,21 @@ export default function Home() {
           <div className="font-display text-[1.05rem] text-ink">
             Your portfolio, in plain language
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-[0.72rem] text-ink-soft">
-            <span className="h-1.5 w-1.5 rounded-full bg-clay" />
-            Grounded · Cited · Personalised
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setVoiceOpen(true)}
+              className="flex items-center gap-2 rounded-full bg-clay px-4 py-2 text-[0.82rem] font-medium text-surface shadow-sm transition hover:bg-clay-deep"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="2" width="6" height="12" rx="3" />
+                <path d="M5 10a7 7 0 0 0 14 0M12 17v4" />
+              </svg>
+              Talk to your assistant
+            </button>
+            <div className="hidden items-center gap-2 rounded-full border border-gold/30 bg-gold-wash px-3 py-1 text-[0.72rem] text-gold lg:flex">
+              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+              Grounded · Cited · Personalised
+            </div>
           </div>
         </header>
 
@@ -167,7 +196,19 @@ export default function Home() {
             ) : (
               <div className="flex flex-col gap-8">
                 {messages.map((m, i) => (
-                  <ChatMessage key={i} message={m} />
+                  <ChatMessage
+                    key={i}
+                    message={m}
+                    question={
+                      i > 0 && messages[i - 1].role === "user"
+                        ? messages[i - 1].content
+                        : undefined
+                    }
+                    investorId={selectedId}
+                    isLast={i === messages.length - 1 && m.role === "assistant"}
+                    busy={busy}
+                    onRegenerate={regenerate}
+                  />
                 ))}
               </div>
             )}
@@ -220,6 +261,14 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {voiceOpen && (
+        <VoicePanel
+          investorId={selectedId}
+          investorName={profile?.name ?? "your"}
+          onClose={() => setVoiceOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,24 +1,27 @@
 @import "tailwindcss";
 
 /*
-  EquiTie Investor Assistant, refined, warm-minimalist theme.
-  Ivory paper ground, warm ink, a single clay/rust accent. Generous whitespace.
+  EquiTie Investor Assistant, matching the equit.ai brand:
+  near-black teal canvas, mint/emerald primary accent, gold secondary, white text.
+  (Accent kept under the --clay token name so all components inherit the change.)
 */
 :root {
-  --paper: #f6f3ec; /* warm ivory canvas */
-  --surface: #fffdf9; /* card / message surface */
-  --surface-sunk: #f0ece2; /* inset panels */
-  --ink: #23201b; /* primary text, warm near-black */
-  --ink-soft: #5c564c; /* secondary text */
-  --ink-faint: #938b7d; /* tertiary / captions */
-  --line: #e4ddd0; /* hairline borders */
-  --line-strong: #d6cdbc;
-  --clay: #bd5c3e; /* signature accent (book-cloth rust) */
-  --clay-deep: #a04a30;
-  --clay-wash: #f3e4dc; /* accent tint background */
-  --gain: #3f6b4f; /* positive figure */
-  --loss: #a8452f; /* negative figure */
-  --focus: #c8775c;
+  --paper: #0b1316; /* near-black teal canvas */
+  --surface: #121e20; /* card / message surface */
+  --surface-sunk: #0e1719; /* inset panels */
+  --ink: #f7fafb; /* primary text, cool near-white */
+  --ink-soft: #b9c3c6; /* secondary text */
+  --ink-faint: #7e8c92; /* tertiary / captions */
+  --line: rgba(255, 255, 255, 0.1); /* hairline borders on dark */
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --clay: #36f4b3; /* signature accent: EquiTie mint/emerald */
+  --clay-deep: #24d7a0;
+  --clay-wash: rgba(54, 244, 179, 0.12); /* accent tint background */
+  --gold: #dec783; /* secondary accent */
+  --gold-wash: rgba(222, 199, 131, 0.1);
+  --gain: #3fd9a0; /* positive figure */
+  --loss: #f2705a; /* negative figure */
+  --focus: #36f4b3;
 }
 
 @theme inline {
@@ -33,11 +36,13 @@
   --color-clay: var(--clay);
   --color-clay-deep: var(--clay-deep);
   --color-clay-wash: var(--clay-wash);
+  --color-gold: var(--gold);
+  --color-gold-wash: var(--gold-wash);
   --color-gain: var(--gain);
   --color-loss: var(--loss);
-  --font-display: var(--font-poppins), system-ui, sans-serif;
-  --font-sans: var(--font-poppins), system-ui, sans-serif;
-  --font-mono: var(--font-poppins), ui-monospace, monospace;
+  --font-display: var(--font-display-brand), system-ui, sans-serif;
+  --font-sans: var(--font-body-brand), system-ui, sans-serif;
+  --font-mono: var(--font-body-brand), ui-monospace, monospace;
 }
 
 html {
@@ -45,15 +50,19 @@ html {
 }
 
 body {
-  background: var(--paper);
+  /* dark base with faint emerald/teal glows, echoing the equit.ai hero mesh */
+  background:
+    radial-gradient(900px 520px at 12% -8%, rgba(54, 244, 179, 0.07), transparent 60%),
+    radial-gradient(820px 520px at 100% 0%, rgba(43, 150, 160, 0.06), transparent 55%),
+    var(--paper);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv01";
 }
 
 ::selection {
-  background: var(--clay-wash);
-  color: var(--clay-deep);
+  background: rgba(54, 244, 179, 0.25);
+  color: var(--ink);
 }
 
 /* Refined scrollbars */

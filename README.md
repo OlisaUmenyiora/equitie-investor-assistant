@@ -97,10 +97,13 @@ cited row belongs to the requested investor.
   has excellent, reliable tool-calling and instruction-following; `reasoning_effort` is
   set to `low` (`OPENAI_REASONING_EFFORT`) to keep latency ~3s on follow-ups while tool
   selection here is simple.
-- **`gpt-realtime`**, reserved for the optional voice surface (a roadmap item). It can
-  register the **same tool definitions**, so spoken answers would use identical
-  deterministic numbers.
+- **`gpt-realtime-2`** (voice `marin`), powers the voice conversation surface over
+  WebRTC. It registers the **same tool definitions**, so spoken answers use identical
+  deterministic numbers, with citations shown in the live transcript.
 - **No model does arithmetic, retrieval-ranking, or FX.** Those are plain code.
+
+The UI follows the **equit.ai brand**: a dark, near-black teal canvas with a mint
+accent and gold secondary, Space Grotesk + Inter Tight type, and the EquiTie logo.
 
 ---
 
@@ -167,7 +170,8 @@ allocation and valuation rows.
   for the assistant's output; it is not a full markdown engine.
 - **Latency.** The portfolio-overview answer can take ~8s because it reasons over a
   larger tool result; follow-ups are ~3s.
-- **Voice is not built**, it is scoped as the next step (same tools, `gpt-realtime`).
+- **Voice** (talk to the assistant) is built on the Realtime API and reuses the same
+  tools; the spoken-audio loop needs a real microphone, so it is verified manually.
 - **Personalisation is rule-based** from `tech_savviness`/`age` plus derived signals;
   it changes tone only. The underlying figures are identical for every investor.
 - **No auth / landing page / infra**, per the brief. The investor-switcher stands in

@@ -1,6 +1,7 @@
 "use client";
 
 import { MarkdownText } from "@/lib/markdown";
+import { MessageActions } from "./MessageActions";
 import type { ChatMessage as Msg } from "./types";
 
 // Friendly labels for the dataset id prefixes shown in citations.
@@ -21,7 +22,21 @@ function labelFor(id: string): string {
   return m ? (PREFIX_LABEL[m[1]] ?? "row") : "row";
 }
 
-export function ChatMessage({ message }: { message: Msg }) {
+export function ChatMessage({
+  message,
+  question,
+  investorId,
+  isLast,
+  busy,
+  onRegenerate,
+}: {
+  message: Msg;
+  question?: string;
+  investorId: string;
+  isLast: boolean;
+  busy: boolean;
+  onRegenerate: () => void;
+}) {
   if (message.role === "user") {
     return (
       <div className="animate-rise flex justify-end">
@@ -51,6 +66,17 @@ export function ChatMessage({ message }: { message: Msg }) {
             </div>
             {message.sources && message.sources.length > 0 && (
               <Citations sources={message.sources} />
+            )}
+            {!message.error && (
+              <MessageActions
+                answer={message.content}
+                question={question}
+                sources={message.sources}
+                investorId={investorId}
+                isLast={isLast}
+                busy={busy}
+                onRegenerate={onRegenerate}
+              />
             )}
           </>
         )}
