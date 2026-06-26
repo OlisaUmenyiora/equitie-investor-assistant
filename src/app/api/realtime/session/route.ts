@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   const profile = getInvestorProfile(investorId);
   const instructions =
     buildSystemPrompt(profile) +
-    "\n\nVOICE MODE: You are speaking out loud. Be conversational and concise. Do NOT read source row ids aloud (they appear on screen). Lead with the answer. Never spell out long lists of numbers unless asked; summarise naturally.";
+    "\n\nVOICE MODE (overrides any citation rule above): You are speaking out loud. Be conversational and concise. Do NOT mention, read, or list source ids or a 'Sources:' line at all. Lead with the answer. Never spell out long lists of numbers unless asked; summarise naturally.";
 
   const res = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
     method: "POST",

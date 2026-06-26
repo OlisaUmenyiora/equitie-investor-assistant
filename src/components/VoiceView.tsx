@@ -95,17 +95,35 @@ export function VoiceView({
             ? "Listening"
             : rt.status === "live"
               ? "Listening… just talk"
-              : "Idle";
+              : rt.status === "paused"
+                ? "Paused to save usage"
+                : "Idle";
 
   const end = () => {
     rt.disconnect();
     onEnd();
   };
 
+  const paused = rt.status === "paused";
+
   return (
     <div className="flex h-full flex-col">
-      {/* status row */}
-      <div className="flex items-center justify-center gap-2 px-4 pt-6 text-center">
+      {/* top bar with an always-reachable close */}
+      <div className="flex items-center justify-between px-4 pt-4">
+        <span className="text-[0.8rem] text-ink-faint">Voice · {firstName}</span>
+        <button
+          onClick={end}
+          aria-label="Close voice"
+          className="grid h-9 w-9 place-items-center rounded-full text-ink-faint transition hover:bg-surface-sunk hover:text-ink"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* status */}
+      <div className="flex items-center justify-center gap-2 px-4 pt-1 text-center">
         <span
           className={`h-2 w-2 rounded-full ${
             rt.status === "error"
@@ -120,18 +138,37 @@ export function VoiceView({
         <span className="text-[0.85rem] font-medium text-ink-soft">{statusLabel}</span>
       </div>
 
-      {/* orb */}
+      {/* orb (tap to resume when paused) */}
       <div className="flex shrink-0 items-center justify-center py-8 sm:py-10">
-        <div className="orb-wrap">
-          <div ref={orbRef} className="orb" data-speaking={rt.speaking} />
-        </div>
+        <button
+          onClick={paused ? () => rt.connect() : undefined}
+          className={paused ? "cursor-pointer" : "cursor-default"}
+          aria-label={paused ? "Resume voice" : undefined}
+        >
+          <div className="orb-wrap">
+            <div
+              ref={orbRef}
+              className="orb"
+              data-speaking={rt.speaking}
+              style={paused ? { opacity: 0.5 } : undefined}
+            />
+          </div>
+        </button>
       </div>
 
       {rt.error && (
         <p className="px-6 text-center text-[0.85rem] text-loss">{rt.error}</p>
       )}
+      {paused && (
+        <button
+          onClick={() => rt.connect()}
+          className="mx-auto mb-1 rounded-full bg-clay px-5 py-2 text-[0.85rem] font-medium text-surface transition hover:bg-clay-deep"
+        >
+          Tap to resume
+        </button>
+      )}
 
-      {/* transcript */}
+      {/* transcript (no source citations in voice, per request) */}
       <div ref={scrollRef} className="mx-auto w-full max-w-2xl flex-1 overflow-y-auto px-5 pb-4">
         {rt.transcript.length === 0 ? (
           <p className="px-2 pt-4 text-center text-[0.9rem] leading-relaxed text-ink-faint">
@@ -150,18 +187,6 @@ export function VoiceView({
               ) : (
                 <div key={t.id} className="max-w-[92%]">
                   <div className="text-[0.95rem] leading-relaxed text-ink">{t.text}</div>
-                  {t.sources && t.sources.length > 0 && (
-                    <div className="mt-1.5 flex flex-wrap gap-1">
-                      {t.sources.slice(0, 8).map((s) => (
-                        <span
-                          key={s}
-                          className="rounded-md border border-line bg-surface px-1.5 py-0.5 font-mono text-[0.68rem] text-ink-faint"
-                        >
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               ),
             )}
@@ -169,8 +194,9 @@ export function VoiceView({
         )}
       </div>
 
-      {/* controls: mic/mute bottom-left, end bottom-right (ChatGPT placement) */}
-      <div className="flex items-center justify-between border-t border-line px-6 py-5">
+      {/* controls: mic/mute bottom-left, end bottom-right; safe-area padded so they
+          never hide behind a mobile browser bar */}
+      <div className="flex items-center justify-between border-t border-line px-6 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
         <button
           onClick={rt.toggleMute}
           disabled={rt.status !== "live"}

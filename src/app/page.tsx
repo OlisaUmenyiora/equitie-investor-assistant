@@ -278,8 +278,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Composer */}
-            <div className="border-t border-line bg-paper/80 px-4 py-4 backdrop-blur lg:px-8 lg:py-5">
+            {/* Composer (safe-area padded so it clears mobile browser bars) */}
+            <div className="border-t border-line bg-paper/80 px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur lg:px-8 lg:pt-5">
               <div className="mx-auto w-full max-w-3xl">
                 <div className="flex items-end gap-2 rounded-2xl border border-line-strong bg-surface px-3 py-2.5 shadow-sm transition focus-within:border-clay focus-within:ring-2 focus-within:ring-clay/15 lg:px-4">
                   <textarea

@@ -6,7 +6,11 @@ import { useCallback, useRef, useState } from "react";
 // The model calls our deterministic tools (executed server-side, investor-scoped);
 // transcripts are built from data-channel events. No numbers are computed here.
 
-export type RealtimeStatus = "idle" | "connecting" | "live" | "error";
+export type RealtimeStatus = "idle" | "connecting" | "live" | "error" | "paused";
+
+// Auto-disconnect after this many ms of silence so an open session does not keep
+// streaming audio (and spending tokens) while no one is talking.
+const IDLE_MS = 30_000;
 
 export interface TranscriptTurn {
   id: string;
@@ -42,6 +46,14 @@ export function useRealtime(investorId: string) {
   const pendingSources = useRef<string[]>([]);
   const counter = useRef(0);
   const nextId = () => `t${counter.current++}`;
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pauseRef = useRef<() => void>(() => {});
+
+  // Reset the inactivity countdown on any activity; fire pause() when it elapses.
+  const bumpIdle = () => {
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+    idleTimer.current = setTimeout(() => pauseRef.current(), IDLE_MS);
+  };
 
   const send = (obj: unknown) => {
     const dc = dcRef.current;
@@ -143,6 +155,8 @@ export function useRealtime(investorId: string) {
         return;
       }
       const type = ev.type as string;
+      // Any inbound activity counts as "not idle".
+      bumpIdle();
 
       switch (type) {
         case "input_audio_buffer.speech_started":
@@ -187,7 +201,12 @@ export function useRealtime(investorId: string) {
     [addUserTurn, upsertAssistantDelta, finishAssistant, runToolCall],
   );
 
-  const disconnect = useCallback(() => {
+  // Tear down the live connection and tracks (stops audio streaming / token spend).
+  const teardown = useCallback(() => {
+    if (idleTimer.current) {
+      clearTimeout(idleTimer.current);
+      idleTimer.current = null;
+    }
     dcRef.current?.close();
     dcRef.current = null;
     micRef.current?.getTracks().forEach((t) => t.stop());
@@ -197,15 +216,25 @@ export function useRealtime(investorId: string) {
     if (audioRef.current) audioRef.current.srcObject = null;
     setMicStream(null);
     setRemoteStream(null);
-    setStatus("idle");
     setListening(false);
     setSpeaking(false);
     setMuted(false);
   }, []);
 
+  const disconnect = useCallback(() => {
+    teardown();
+    setStatus("idle");
+  }, [teardown]);
+
+  // Auto-pause on inactivity: tears down so no audio is streamed while idle.
+  const pause = useCallback(() => {
+    teardown();
+    setStatus("paused");
+  }, [teardown]);
+  pauseRef.current = pause;
+
   const connect = useCallback(async () => {
     setError(null);
-    setTranscript([]);
     setStatus("connecting");
     try {
       const tokenRes = await fetch("/api/realtime/session", {
@@ -245,9 +274,12 @@ export function useRealtime(investorId: string) {
 
       const dc = pc.createDataChannel("oai-events");
       dcRef.current = dc;
-      dc.onopen = () => setStatus("live");
+      dc.onopen = () => {
+        setStatus("live");
+        bumpIdle();
+      };
       dc.onmessage = (e) => handleEvent(e.data);
-      dc.onclose = () => setStatus("idle");
+      dc.onclose = () => setStatus((s) => (s === "paused" ? s : "idle"));
 
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);

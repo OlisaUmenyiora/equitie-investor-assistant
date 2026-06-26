@@ -1,6 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter_Tight } from "next/font/google";
 import "./globals.css";
+
+// viewport-fit: cover enables env(safe-area-inset-*) so bottom controls clear the
+// mobile browser/home-bar; the dvh-based layout handles the dynamic toolbar.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0b1316",
+};
 
 // Matching the equit.ai brand typography: Space Grotesk for display/headings,
 // Inter Tight for body and figures.
