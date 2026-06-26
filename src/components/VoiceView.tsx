@@ -107,7 +107,7 @@ export function VoiceView({
   const paused = rt.status === "paused";
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
       {/* top bar with an always-reachable close */}
       <div className="flex items-center justify-between px-4 pt-4">
         <span className="text-[0.8rem] text-ink-faint">Voice · {firstName}</span>
@@ -169,7 +169,7 @@ export function VoiceView({
       )}
 
       {/* transcript (no source citations in voice, per request) */}
-      <div ref={scrollRef} className="mx-auto w-full max-w-2xl flex-1 overflow-y-auto px-5 pb-4">
+      <div ref={scrollRef} className="mx-auto w-full min-h-0 max-w-2xl flex-1 overflow-y-auto px-5 pb-4">
         {rt.transcript.length === 0 ? (
           <p className="px-2 pt-4 text-center text-[0.9rem] leading-relaxed text-ink-faint">
             Ask out loud, for example &ldquo;What&apos;s my MOIC on Forgecraft?&rdquo;
@@ -196,7 +196,7 @@ export function VoiceView({
 
       {/* controls: mic/mute bottom-left, end bottom-right; safe-area padded so they
           never hide behind a mobile browser bar */}
-      <div className="flex items-center justify-between border-t border-line px-6 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+      <div className="flex shrink-0 items-center justify-between border-t border-line px-6 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
         <button
           onClick={rt.toggleMute}
           disabled={rt.status !== "live"}
